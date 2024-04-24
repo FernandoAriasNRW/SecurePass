@@ -1,4 +1,5 @@
-﻿using SecurePass.Auth.User.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using SecurePass.Auth.User.Domain;
 using SecurePass.Repository;
 
 namespace SecurePass.Auth.User.Services
@@ -29,6 +30,15 @@ namespace SecurePass.Auth.User.Services
       var user = await _userRepository.GetById(id);
 
       return user ?? throw new InvalidOperationException("Not Found any User");
+    }
+
+    public async Task<UserEntity> GetByEmail(string email)
+    {
+      var user = _userRepository.GetAll();
+
+      return user == null
+        ? throw new InvalidOperationException("Not Found any User")
+        : await user.Where(user => user.Email == email).FirstAsync();
     }
 
     public List<UserEntity> Search(string term)

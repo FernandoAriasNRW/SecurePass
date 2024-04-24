@@ -15,5 +15,7 @@ namespace SecurePass.Auth.User.Services
     public Task Delete(Guid id);
 
     public List<UserEntity> Search(string term);
+
+    public Task<UserEntity> GetByEmail(string email);
   }
 }
