@@ -1,16 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using SecurePass.Auth.User.Domain;
+using SecurePass.Repository;
 using SecurePass.Vaults.Domain;
 
 namespace SecurePass.Registers.Domain
 {
-  public class RegisterEntity
+  public class RecordEntity : BaseEntity
   {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     public string Name { get; set; }
 
@@ -29,18 +25,9 @@ namespace SecurePass.Registers.Domain
     [Required]
     public UserEntity User { get; set; }
 
-    public RegisterEntity()
+    public RecordEntity()
     {
       Description = "";
     }
-
-    // Fecha de creación
-    public DateTime CreatedAt { get; set; }
-
-    // Fecha de última modificación
-    public DateTime? UpdatedAt { get; set; }
-
-    // Fecha de eliminación
-    public DateTime? DeletedAt { get; set; }
   }
 }

@@ -11,7 +11,7 @@
       _context = context;
     }
 
-    public virtual async Task Add(TEntity entity)
+    public virtual async Task<int> Add(TEntity entity)
     {
       if (object.Equals(entity, null))
       {
@@ -19,7 +19,7 @@
       }
 
       await _context.AddAsync<TEntity>(entity);
-      await _context.SaveChangesAsync();
+      return await _context.SaveChangesAsync();
     }
 
     public virtual async Task Delete(Guid id)

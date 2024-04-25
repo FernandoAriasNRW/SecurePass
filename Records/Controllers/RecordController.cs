@@ -6,7 +6,7 @@ namespace SecurePass.Registers.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class RegisterController : ControllerBase
+  public class RecordController : ControllerBase
   {
     // GET: api/<RegisterController>
     [HttpGet]

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SecurePass.Auth.Services;
 using SecurePass.Auth.User.Domain;
 using SecurePass.Auth.User.Services;
 using SecurePass.Registers.Domain;
@@ -18,8 +19,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddScoped<IRepository<UserEntity>, Repository<UserEntity>>();
 builder.Services.AddScoped<IRepository<VaultEntity>, Repository<VaultEntity>>();
-builder.Services.AddScoped<IRepository<RegisterEntity>, Repository<RegisterEntity>>();
+builder.Services.AddScoped<IRepository<RecordEntity>, Repository<RecordEntity>>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
 
 var app = builder.Build();

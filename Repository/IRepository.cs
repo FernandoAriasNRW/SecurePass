@@ -6,7 +6,7 @@
 
     public IQueryable<TEntity> GetAll();
 
-    public Task Add(TEntity entity);
+    public Task<int> Add(TEntity entity);
 
     public Task Update(Guid id, TEntity entity);
 

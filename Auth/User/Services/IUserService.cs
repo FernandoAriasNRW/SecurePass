@@ -8,14 +8,14 @@ namespace SecurePass.Auth.User.Services
 
     public Task<UserEntity> GetById(Guid id);
 
-    public Task Create(UserEntity entity);
+    public Task<int> Create(UserEntity entity);
 
     public Task Update(Guid id, UserEntity entity);
 
     public Task Delete(Guid id);
 
-    public List<UserEntity> Search(string term);
+    public List<UserEntity>? Search(string term);
 
-    public Task<UserEntity> GetByEmail(string email);
+    public Task<UserEntity?> GetByEmail(string email);
   }
 }

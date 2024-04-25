@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SecurePass.Auth.Domain;
 using SecurePass.Auth.User.Domain;
 using SecurePass.Repository;
 
@@ -8,9 +9,14 @@ namespace SecurePass.Auth.User.Services
   {
     private readonly IRepository<UserEntity> _userRepository = userRepository;
 
-    public async Task Create(UserEntity entity)
+    public async Task<int> Create(UserEntity entity)
     {
-      await _userRepository.Add(entity);
+      return await _userRepository.Add(entity);
+    }
+
+    public async Task<int> Create(RegisterDto entity)
+    {
+      return await _userRepository.Add(entity);
     }
 
     public async Task Delete(Guid id)
@@ -29,23 +35,21 @@ namespace SecurePass.Auth.User.Services
     {
       var user = await _userRepository.GetById(id);
 
-      return user ?? throw new InvalidOperationException("Not Found any User");
+      return user;
     }
 
-    public async Task<UserEntity> GetByEmail(string email)
+    public async Task<UserEntity?> GetByEmail(string email)
     {
       var user = _userRepository.GetAll();
 
-      return user == null
-        ? throw new InvalidOperationException("Not Found any User")
-        : await user.Where(user => user.Email == email).FirstAsync();
+      return !user.Any() ? null : await user.Where(user => user.Email == email).FirstAsync();
     }
 
-    public List<UserEntity> Search(string term)
+    public List<UserEntity>? Search(string term)
     {
       var entity = _userRepository.GetAll();
 
-      return [.. entity.Where(user => user.Name.Contains(term) || user.LastName.Contains(term) || user.Email.Contains(term))];
+      return !entity.Any() ? null : [.. entity.Where(user => user.Name.Contains(term) || user.LastName.Contains(term) || user.Email.Contains(term))];
     }
 
     public async Task Update(Guid id, UserEntity entity)
