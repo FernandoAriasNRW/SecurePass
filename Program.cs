@@ -4,6 +4,7 @@ using SecurePass.Auth.User.Domain;
 using SecurePass.Auth.User.Services;
 using SecurePass.Registers.Domain;
 using SecurePass.Repository;
+using SecurePass.Utils;
 using SecurePass.Vaults.Domain;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IRepository<VaultEntity>, Repository<VaultEntity>>();
 builder.Services.AddScoped<IRepository<RecordEntity>, Repository<RecordEntity>>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddSingleton<IEncrypt, Encrypt>();
 
 builder.Services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
 

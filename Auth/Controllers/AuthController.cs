@@ -35,7 +35,12 @@ namespace SecurePass.Auth.Controllers
         return Ok();
       }
 
-      return BadRequest("Something Wrong");
+      if (user == 2)
+      {
+        return BadRequest("An account with this email already exist");
+      }
+
+      return Problem("Something Wrong");
     }
   }
 }

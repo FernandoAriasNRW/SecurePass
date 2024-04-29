@@ -10,10 +10,6 @@ namespace SecurePass.Repository
     public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options)
     { }
 
-    public virtual DbSet<UserEntity> User { get; set; }
-    public virtual DbSet<VaultEntity> Vault { get; set; }
-    public virtual DbSet<RecordEntity> Record { get; set; }
-
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
       // Obtener todas las entidades que están siendo añadidas, modificadas o eliminadas
@@ -34,15 +30,6 @@ namespace SecurePass.Repository
           if (entity.State == EntityState.Modified || entity.State == EntityState.Deleted)
           {
             ((BaseEntity)entity.Entity).UpdatedAt = DateTime.UtcNow;
-          }
-
-          // Borrado lógico
-          if (entity.State == EntityState.Deleted)
-          {
-            // Cancelar la eliminación física
-            entity.State = EntityState.Modified;
-            // Establecer la fecha de eliminación
-            ((BaseEntity)entity.Entity).DeletedAt = DateTime.UtcNow;
           }
         }
       }

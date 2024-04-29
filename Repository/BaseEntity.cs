@@ -9,6 +9,8 @@ namespace SecurePass.Repository
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
+    public bool IsDeleted { get; set; }
+
     // Fecha de creación
     public DateTime CreatedAt { get; set; }
 

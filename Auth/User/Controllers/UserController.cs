@@ -21,30 +21,68 @@ namespace SecurePass.Auth.User.Controllers
 
     // GET api/<UserController>/5
     [HttpGet("{id}")]
-    public async Task<UserEntity> Get(Guid id)
+    public async Task<IActionResult> Get(Guid id)
     {
-      return await _userService.GetById(id);
+      var entity = await _userService.GetById(id);
+
+      if (entity == null)
+      {
+        return NotFound();
+      }
+
+      return Ok(entity);
     }
 
     // POST api/<UserController>
     [HttpPost]
-    public async Task<OkResult> Post([FromBody] UserEntity value)
+    public async Task<IActionResult> Post([FromBody] UserEntity user)
     {
-      await _userService.Create(value);
+      var response = await _userService.Create(user);
 
-      return Ok();
+      if (response == 1)
+      {
+        return Created();
+      }
+
+      if (response == 2)
+      {
+        return BadRequest("An account with this email already exist");
+      }
+
+      return Problem("Something was wrong", null, 400);
     }
 
     // PUT api/<UserController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public async Task<IActionResult> Put(Guid id, [FromBody] UserEntity user)
     {
+      var response = await _userService.Update(id, user);
+
+      if (response == 1)
+      {
+        return Ok("User Succesfully Updated");
+      }
+
+      if (response == -1)
+      {
+        return NotFound($"Not Found any User with the Id {id}");
+      }
+
+      return Problem("Something was wrong", null, 400);
     }
 
     // DELETE api/<UserController>/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task<IActionResult> Delete(Guid id)
     {
+      var response = await _userService.Delete(id);
+
+      if (response == 1)
+      {
+        return Ok(response);
+      }
+
+      return NotFound("Not found User to delete");
     }
   }
 }

@@ -1,15 +1,14 @@
-﻿namespace SecurePass.Repository
-{
-  public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
-  {
-    private readonly ApiDbContext _context;
+﻿using Microsoft.EntityFrameworkCore;
 
-    public Repository(
-      ApiDbContext context
-      )
-    {
-      _context = context;
-    }
+namespace SecurePass.Repository
+{
+  public class Repository<TEntity>(
+    ApiDbContext context
+      ) : IRepository<TEntity> where TEntity : BaseEntity
+  {
+    private readonly ApiDbContext _context = context;
+
+    protected DbSet<TEntity> Entities => _context.Set<TEntity>();
 
     public virtual async Task<int> Add(TEntity entity)
     {
@@ -18,33 +17,48 @@
         throw new ArgumentNullException(nameof(entity), $"{nameof(Add)} {nameof(entity)} must not be null");
       }
 
-      await _context.AddAsync<TEntity>(entity);
+      await Entities.AddAsync(entity);
+
       return await _context.SaveChangesAsync();
     }
 
-    public virtual async Task Delete(Guid id)
+    public virtual async Task<int> SoftDelete(Guid id)
     {
-      var entity = await _context.FindAsync<TEntity>(id);
+      TEntity? entity = await GetById(id);
 
       if (object.Equals(entity, null))
       {
-        throw new BadHttpRequestException($"{nameof(TEntity)} was not found");
+        return 0;
+      }
+
+      entity.IsDeleted = true;
+      entity.DeletedAt = DateTime.UtcNow;
+
+      await Update(entity);
+      return await _context.SaveChangesAsync();
+    }
+
+    public virtual async Task<int> HardDelete(Guid id)
+    {
+      var entity = await GetById(id);
+
+      if (object.Equals(entity, null))
+      {
+        return 0;
       }
 
       _context.Remove<TEntity>(entity);
-      await _context.SaveChangesAsync();
+      return await _context.SaveChangesAsync();
     }
 
-    public virtual IQueryable<TEntity> GetAll()
+    public virtual async Task<List<TEntity>> GetAll()
     {
-      return _context.Set<TEntity>();
+      return await Entities.ToListAsync();
     }
 
-    public virtual async Task<TEntity> GetById(Guid id)
+    public virtual async Task<TEntity?> GetById(Guid id)
     {
-      var entity = await _context.FindAsync<TEntity>(id);
-
-      return entity ?? throw new BadHttpRequestException($"Not Found Any {nameof(TEntity)} with the Id {id}");
+      return await Entities.FindAsync(id);
     }
 
     //public virtual Task<List<TEntity>> Search(string keyword)
@@ -58,22 +72,16 @@
     //  }
     //}
 
-    public virtual async Task Update(Guid id, TEntity entity)
+    public virtual async Task<int> Update(TEntity entity)
     {
       if (entity == null)
       {
         throw new ArgumentNullException(nameof(entity), $"{nameof(Add)} {nameof(entity)} must not be null");
       }
 
-      var entityFound = await _context.FindAsync<TEntity>(id);
+      Entities.Update(entity);
 
-      if (object.Equals(entityFound, null))
-      {
-        throw new BadHttpRequestException($"{nameof(TEntity)} was not found");
-      }
-
-      _context.Update<TEntity>(entity);
-      await _context.SaveChangesAsync();
+      return await _context.SaveChangesAsync();
     }
   }
 }
