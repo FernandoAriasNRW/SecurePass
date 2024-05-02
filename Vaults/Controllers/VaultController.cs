@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using SecurePass.Vaults.Domain;
+using SecurePass.Vaults.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -6,38 +9,54 @@ namespace SecurePass.Vaults.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class VaultController : ControllerBase
+  public class VaultController(IVaultService vaultService) : ControllerBase
   {
+    private readonly IVaultService _vaultService = vaultService;
+
     // GET: api/<VaultController>
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<IEnumerable<Vault>> Get()
     {
-      return new string[] { "value1", "value2" };
+      if (HttpContext.User.Identity is ClaimsIdentity user)
+      {
+        string userId = user.Claims.First().Value;
+
+        return await _vaultService.GetAll(userId);
+      }
+
+      return await _vaultService.GetAll();
     }
 
     // GET api/<VaultController>/5
     [HttpGet("{id}")]
-    public string Get(int id)
+    public async Task<Vault?> Get(Guid id)
     {
-      return "value";
+      return await _vaultService.GetById(id);
     }
 
     // POST api/<VaultController>
     [HttpPost]
-    public void Post([FromBody] string value)
+    public void Post([FromBody] Vault value)
     {
     }
 
     // PUT api/<VaultController>/5
     [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    public void Put(Guid id, [FromBody] string value)
     {
     }
 
     // DELETE api/<VaultController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    [HttpDelete("soft/{id}")]
+    public Task<int> SoftDelete(Guid id)
     {
+      return _vaultService.SoftDelete(id);
+    }
+
+    [HttpDelete("hard/{id}")]
+    public Task<int> HardDelete(Guid id)
+    {
+      return _vaultService.HardDelete(id);
     }
   }
 }

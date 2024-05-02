@@ -1,18 +1,18 @@
-﻿using SecurePass.Auth.Domain;
-using SecurePass.Auth.User.Domain;
+﻿using Microsoft.EntityFrameworkCore;
+using SecurePass.Auth.Domain;
 using SecurePass.Repository;
 using SecurePass.Utils;
 
 namespace SecurePass.Auth.User.Services
 {
-  public class UserService(IRepository<UserEntity> userRepository, IEncrypt encrypt) : IUserService
+  public class UserService(IRepository<Domain.User> userRepository, IEncrypt encrypt) : IUserService
   {
-    private readonly IRepository<UserEntity> _userRepository = userRepository;
+    private readonly IRepository<Domain.User> _userRepository = userRepository;
     private readonly IEncrypt _encrypt = encrypt;
 
-    public async Task<int> Create(UserEntity entity)
+    public async Task<int> Create(Domain.User entity)
     {
-      UserEntity? isUniqueEmail = await GetByEmail(entity.Email);
+      Domain.User? isUniqueEmail = await GetByEmail(entity.Email);
 
       if (isUniqueEmail != null)
       {
@@ -26,7 +26,7 @@ namespace SecurePass.Auth.User.Services
 
     public async Task<int> Create(RegisterDto entity)
     {
-      UserEntity? isUniqueEmail = await GetByEmail(entity.Email);
+      Domain.User? isUniqueEmail = await GetByEmail(entity.Email);
 
       if (isUniqueEmail != null)
       {
@@ -43,23 +43,23 @@ namespace SecurePass.Auth.User.Services
       return await _userRepository.SoftDelete(id);
     }
 
-    public async Task<List<UserEntity>> GetAll()
+    public async Task<List<Domain.User>> GetAll()
     {
-      IEnumerable<UserEntity> entity = await _userRepository.GetAll();
+      IEnumerable<Domain.User> entity = await _userRepository.GetAll().ToListAsync();
 
       return [.. entity];
     }
 
-    public async Task<UserEntity?> GetById(Guid id)
+    public async Task<Domain.User?> GetById(Guid id)
     {
-      var user = await _userRepository.GetById(id);
+      var user = await _userRepository.GetById().FindAsync(id);
 
       return user;
     }
 
-    public async Task<UserEntity?> GetByEmail(string email)
+    public async Task<Domain.User?> GetByEmail(string email)
     {
-      IEnumerable<UserEntity> user = await _userRepository.GetAll();
+      IEnumerable<Domain.User> user = await _userRepository.GetAll().ToListAsync();
 
       if (user.Any())
       {
@@ -69,14 +69,14 @@ namespace SecurePass.Auth.User.Services
       return null;
     }
 
-    public async Task<List<UserEntity>?> Search(string term)
+    public async Task<List<Domain.User>?> Search(string term)
     {
-      IEnumerable<UserEntity> entity = await _userRepository.GetAll();
+      IEnumerable<Domain.User> entity = await _userRepository.GetAll().ToListAsync();
 
       return !entity.Any() ? null : [.. entity.Where(user => user.Name.Contains(term) || user.LastName.Contains(term) || user.Email.Contains(term))];
     }
 
-    public async Task<int> Update(Guid id, UserEntity entity)
+    public async Task<int> Update(Guid id, Domain.User entity)
     {
       return await _userRepository.Update(entity);
     }

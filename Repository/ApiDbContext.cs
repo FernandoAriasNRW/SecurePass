@@ -44,9 +44,16 @@ namespace SecurePass.Repository
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
       // Configurar un filtro global para excluír las entidades eliminadas lógicamente
-      modelBuilder.Entity<UserEntity>().HasQueryFilter(p => !p.DeletedAt.HasValue);
-      modelBuilder.Entity<VaultEntity>().HasQueryFilter(p => !p.DeletedAt.HasValue);
-      modelBuilder.Entity<RecordEntity>().HasQueryFilter(p => !p.DeletedAt.HasValue);
+      modelBuilder.Entity<User>().HasQueryFilter(p => !p.DeletedAt.HasValue);
+      modelBuilder.Entity<Vault>().HasQueryFilter(p => !p.DeletedAt.HasValue);
+      modelBuilder.Entity<Record>().HasQueryFilter(p => !p.DeletedAt.HasValue);
+
+      //modelBuilder.Entity<User>()
+      // .HasMany(e => e.Records)
+      // .WithOne(e => e.User)
+      // .HasForeignKey(e => e.UserId)
+      // .HasPrincipalKey(e => e.Id)
+      // .IsRequired(false);
     }
   }
 }

@@ -5,7 +5,7 @@ using SecurePass.Vaults.Domain;
 
 namespace SecurePass.Registers.Domain
 {
-  public class RecordEntity : BaseEntity
+  public class Record : BaseEntity
   {
     [Required]
     public string Name { get; set; }
@@ -20,12 +20,15 @@ namespace SecurePass.Registers.Domain
 
     public string? Url { get; set; }
 
-    public VaultEntity? Vault { get; set; }
+    public Guid? VaultId { get; set; }
 
-    [Required]
-    public UserEntity User { get; set; }
+    public Vault? Vault { get; set; }
 
-    public RecordEntity()
+    public Guid UserId { get; set; }
+
+    public User? User { get; set; }
+
+    public Record()
     {
       Description = "";
     }

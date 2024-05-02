@@ -2,7 +2,7 @@
 
 namespace SecurePass.Auth.Domain
 {
-  public class RegisterDto : UserEntity
+  public class RegisterDto : User.Domain.User
   {
     //[Required]
     //public string Name { get; set; }

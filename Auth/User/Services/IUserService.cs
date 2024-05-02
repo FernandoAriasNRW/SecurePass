@@ -1,21 +1,19 @@
-﻿using SecurePass.Auth.User.Domain;
-
-namespace SecurePass.Auth.User.Services
+﻿namespace SecurePass.Auth.User.Services
 {
   public interface IUserService
   {
-    public Task<List<UserEntity>> GetAll();
+    public Task<List<Domain.User>> GetAll();
 
-    public Task<UserEntity?> GetById(Guid id);
+    public Task<Domain.User?> GetById(Guid id);
 
-    public Task<int> Create(UserEntity entity);
+    public Task<int> Create(Domain.User entity);
 
-    public Task<int> Update(Guid id, UserEntity entity);
+    public Task<int> Update(Guid id, Domain.User entity);
 
     public Task<int> Delete(Guid id);
 
-    public Task<List<UserEntity>?> Search(string term);
+    public Task<List<Domain.User>?> Search(string term);
 
-    public Task<UserEntity?> GetByEmail(string email);
+    public Task<Domain.User?> GetByEmail(string email);
   }
 }

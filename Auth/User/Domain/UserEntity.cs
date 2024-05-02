@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using SecurePass.Registers.Domain;
 using SecurePass.Repository;
-using SecurePass.Vaults.Domain;
 
 namespace SecurePass.Auth.User.Domain
 {
-  public class UserEntity : BaseEntity
+  public class User : BaseEntity
   {
     [Required]
     public string Name { get; set; }
@@ -21,11 +19,7 @@ namespace SecurePass.Auth.User.Domain
 
     public string Role { get; set; }
 
-    public ICollection<VaultEntity>? Vaults { get; set; }
-
-    public ICollection<RecordEntity>? Registers { get; set; }
-
-    public UserEntity()
+    public User()
     {
       Role = "Client";
     }

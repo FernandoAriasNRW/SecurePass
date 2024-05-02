@@ -5,9 +5,6 @@ namespace SecurePass.Utils
 {
   public class Encrypt : IEncrypt
   {
-    protected Encrypt()
-    { }
-
     public string GetSHA256(string str)
     {
       ASCIIEncoding encoding = new();

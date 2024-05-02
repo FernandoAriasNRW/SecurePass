@@ -22,7 +22,7 @@ namespace SecurePass.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SecurePass.Auth.User.Domain.UserEntity", b =>
+            modelBuilder.Entity("SecurePass.Auth.User.Domain.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,10 +62,10 @@ namespace SecurePass.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserEntity");
+                    b.ToTable("User");
                 });
 
-            modelBuilder.Entity("SecurePass.Registers.Domain.RecordEntity", b =>
+            modelBuilder.Entity("SecurePass.Registers.Domain.Record", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -114,10 +114,10 @@ namespace SecurePass.Migrations
 
                     b.HasIndex("VaultId");
 
-                    b.ToTable("RecordEntity");
+                    b.ToTable("Record");
                 });
 
-            modelBuilder.Entity("SecurePass.Vaults.Domain.VaultEntity", b =>
+            modelBuilder.Entity("SecurePass.Vaults.Domain.Vault", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -149,19 +149,19 @@ namespace SecurePass.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("VaultEntity");
+                    b.ToTable("Vault");
                 });
 
-            modelBuilder.Entity("SecurePass.Registers.Domain.RecordEntity", b =>
+            modelBuilder.Entity("SecurePass.Registers.Domain.Record", b =>
                 {
-                    b.HasOne("SecurePass.Auth.User.Domain.UserEntity", "User")
-                        .WithMany("Registers")
+                    b.HasOne("SecurePass.Auth.User.Domain.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SecurePass.Vaults.Domain.VaultEntity", "Vault")
-                        .WithMany("Registers")
+                    b.HasOne("SecurePass.Vaults.Domain.Vault", "Vault")
+                        .WithMany()
                         .HasForeignKey("VaultId");
 
                     b.Navigation("User");
@@ -169,27 +169,15 @@ namespace SecurePass.Migrations
                     b.Navigation("Vault");
                 });
 
-            modelBuilder.Entity("SecurePass.Vaults.Domain.VaultEntity", b =>
+            modelBuilder.Entity("SecurePass.Vaults.Domain.Vault", b =>
                 {
-                    b.HasOne("SecurePass.Auth.User.Domain.UserEntity", "User")
-                        .WithMany("Vaults")
+                    b.HasOne("SecurePass.Auth.User.Domain.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SecurePass.Auth.User.Domain.UserEntity", b =>
-                {
-                    b.Navigation("Registers");
-
-                    b.Navigation("Vaults");
-                });
-
-            modelBuilder.Entity("SecurePass.Vaults.Domain.VaultEntity", b =>
-                {
-                    b.Navigation("Registers");
                 });
 #pragma warning restore 612, 618
         }

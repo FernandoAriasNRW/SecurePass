@@ -1,10 +1,12 @@
-﻿namespace SecurePass.Repository
-{
-  public interface IRepository<TEntity>
-  {
-    public Task<TEntity?> GetById(Guid id);
+﻿using Microsoft.EntityFrameworkCore;
 
-    public Task<List<TEntity>> GetAll();
+namespace SecurePass.Repository
+{
+  public interface IRepository<TEntity> where TEntity : class
+  {
+    public DbSet<TEntity> GetById();
+
+    public DbSet<TEntity> GetAll();
 
     public Task<int> Add(TEntity entity);
 

@@ -24,7 +24,7 @@ namespace SecurePass.Repository
 
     public virtual async Task<int> SoftDelete(Guid id)
     {
-      TEntity? entity = await GetById(id);
+      TEntity? entity = await GetById().FindAsync(id);
 
       if (object.Equals(entity, null))
       {
@@ -40,7 +40,7 @@ namespace SecurePass.Repository
 
     public virtual async Task<int> HardDelete(Guid id)
     {
-      var entity = await GetById(id);
+      var entity = await GetById().FindAsync(id);
 
       if (object.Equals(entity, null))
       {
@@ -51,14 +51,14 @@ namespace SecurePass.Repository
       return await _context.SaveChangesAsync();
     }
 
-    public virtual async Task<List<TEntity>> GetAll()
+    public virtual DbSet<TEntity> GetAll()
     {
-      return await Entities.ToListAsync();
+      return Entities;
     }
 
-    public virtual async Task<TEntity?> GetById(Guid id)
+    public virtual DbSet<TEntity> GetById()
     {
-      return await Entities.FindAsync(id);
+      return Entities;
     }
 
     //public virtual Task<List<TEntity>> Search(string keyword)
