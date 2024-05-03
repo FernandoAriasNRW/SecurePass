@@ -10,7 +10,7 @@ namespace SecurePass.Repository
 
     public Task<int> Add(TEntity entity);
 
-    public Task<int> Update(TEntity entity);
+    public Task<int> Update(TEntity entity, TEntity newEntity);
 
     public Task<int> SoftDelete(Guid id);
 

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecurePass.Vaults.Domain;
 using SecurePass.Vaults.Services;
@@ -14,49 +15,86 @@ namespace SecurePass.Vaults.Controllers
     private readonly IVaultService _vaultService = vaultService;
 
     // GET: api/<VaultController>
+    [Authorize]
     [HttpGet]
     public async Task<IEnumerable<Vault>> Get()
     {
-      if (HttpContext.User.Identity is ClaimsIdentity user)
+      if (HttpContext.User.Identity.IsAuthenticated)
       {
-        string userId = user.Claims.First().Value;
+        if (HttpContext.User.Identity is ClaimsIdentity user)
+        {
+          string userId = user.Claims.First().Value;
 
-        return await _vaultService.GetAll(userId);
+          return await _vaultService.GetAll(userId);
+        }
       }
 
       return await _vaultService.GetAll();
     }
 
     // GET api/<VaultController>/5
+    [Authorize]
     [HttpGet("{id}")]
-    public async Task<Vault?> Get(Guid id)
+    public async Task<IActionResult> Get(Guid id)
     {
-      return await _vaultService.GetById(id);
+      var response = await _vaultService.GetById(id);
+
+      if (response == null)
+      {
+        return NotFound($"Not found any record with this Id {id}");
+      }
+
+      return Ok(response);
     }
 
     // POST api/<VaultController>
+    [Authorize]
     [HttpPost]
-    public void Post([FromBody] Vault value)
+    public async Task<IActionResult> Post([FromBody] Vault entity)
     {
+      var response = await _vaultService.Create(entity);
+
+      if (response == 1)
+      {
+        return Created();
+      }
+
+      return Problem("Something was wrong", null, 400);
     }
 
     // PUT api/<VaultController>/5
+    [Authorize]
     [HttpPut("{id}")]
-    public void Put(Guid id, [FromBody] string value)
+    public async Task<IActionResult> Put(Guid id, [FromBody] Vault entity)
     {
+      var response = await _vaultService.Update(id, entity);
+
+      if (response == 2)
+      {
+        return NotFound($"Not found any recored to update with this Id {id}");
+      }
+
+      if (response == 0)
+      {
+        return Problem("Something was wrong");
+      }
+
+      return Ok(response);
     }
 
     // DELETE api/<VaultController>/5
+    [Authorize]
     [HttpDelete("soft/{id}")]
-    public Task<int> SoftDelete(Guid id)
+    public async Task<int> SoftDelete(Guid id)
     {
-      return _vaultService.SoftDelete(id);
+      return await _vaultService.SoftDelete(id);
     }
 
+    [Authorize("admin")]
     [HttpDelete("hard/{id}")]
-    public Task<int> HardDelete(Guid id)
+    public async Task<int> HardDelete(Guid id)
     {
-      return _vaultService.HardDelete(id);
+      return await _vaultService.HardDelete(id);
     }
   }
 }

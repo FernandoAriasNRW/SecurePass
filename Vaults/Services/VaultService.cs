@@ -54,7 +54,7 @@ namespace SecurePass.Vaults.Services
         return 2;
       }
 
-      return await _vaultRepository.Update(entity);
+      return await _vaultRepository.Update(entityFound, entity);
     }
   }
 }

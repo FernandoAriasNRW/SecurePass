@@ -31,10 +31,12 @@ namespace SecurePass.Repository
         return 0;
       }
 
-      entity.IsDeleted = true;
-      entity.DeletedAt = DateTime.UtcNow;
+      var newEntity = entity;
 
-      await Update(entity);
+      newEntity.IsDeleted = true;
+      newEntity.DeletedAt = DateTime.UtcNow;
+
+      await Update(entity, newEntity);
       return await _context.SaveChangesAsync();
     }
 
@@ -72,14 +74,14 @@ namespace SecurePass.Repository
     //  }
     //}
 
-    public virtual async Task<int> Update(TEntity entity)
+    public virtual async Task<int> Update(TEntity entity, TEntity newEntity)
     {
       if (entity == null)
       {
         throw new ArgumentNullException(nameof(entity), $"{nameof(Add)} {nameof(entity)} must not be null");
       }
 
-      Entities.Update(entity);
+      Entities.Entry(entity).CurrentValues.SetValues(newEntity);
 
       return await _context.SaveChangesAsync();
     }

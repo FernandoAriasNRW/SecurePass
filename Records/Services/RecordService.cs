@@ -25,17 +25,17 @@ namespace SecurePass.Records.Services
 
     public async Task<List<Record>> GetAll()
     {
-      return await _recordRepository.GetAll().Include(r => r.User).ToListAsync();
+      return await _recordRepository.GetAll().Include(r => r.User).Include(r => r.Vault).ToListAsync();
     }
 
     public async Task<List<Record>> GetAll(string userId)
     {
-      return await _recordRepository.GetAll().Include(r => r.User).Where(record => record.UserId.ToString() == userId).ToListAsync();
+      return await _recordRepository.GetAll().Include(r => r.User).Include(r => r.Vault).Where(record => record.UserId.ToString() == userId).ToListAsync();
     }
 
     public async Task<Record?> GetById(Guid id)
     {
-      return await _recordRepository.GetById().Where(record => record.Id == id).Include(r => r.User).FirstOrDefaultAsync();
+      return await _recordRepository.GetById().Where(record => record.Id == id).Include(r => r.User).Include(r => r.Vault).FirstOrDefaultAsync();
     }
 
     public async Task<List<Record>> Search(string term)
@@ -54,7 +54,7 @@ namespace SecurePass.Records.Services
         return 2;
       }
 
-      return await _recordRepository.Update(entity);
+      return await _recordRepository.Update(entityFound, entity);
     }
   }
 }

@@ -78,7 +78,14 @@ namespace SecurePass.Auth.User.Services
 
     public async Task<int> Update(Guid id, Domain.User entity)
     {
-      return await _userRepository.Update(entity);
+      var entityFound = await GetById(id);
+
+      if (entityFound == null)
+      {
+        return 2;
+      }
+
+      return await _userRepository.Update(entityFound, entity);
     }
   }
 }

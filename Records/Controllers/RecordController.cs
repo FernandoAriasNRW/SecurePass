@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecurePass.Records.Services;
 using SecurePass.Registers.Domain;
@@ -17,11 +18,14 @@ namespace SecurePass.Registers.Controllers
     [HttpGet]
     public async Task<IEnumerable<Record>> Get()
     {
-      if (HttpContext.User.Identity is ClaimsIdentity user)
+      if (HttpContext.User.Identity.IsAuthenticated)
       {
-        string userId = user.Claims.First().Value;
+        if (HttpContext.User.Identity is ClaimsIdentity user)
+        {
+          string userId = user.Claims.First().Value;
 
-        return await _recordService.GetAll(userId);
+          return await _recordService.GetAll(userId);
+        }
       }
 
       return await _recordService.GetAll();
@@ -43,9 +47,16 @@ namespace SecurePass.Registers.Controllers
 
     // POST api/<RegisterController>
     [HttpPost]
-    public async Task<int> Post([FromBody] Record entity)
+    public async Task<IActionResult> Post([FromBody] Record entity)
     {
-      return await _recordService.Create(entity);
+      var response = await _recordService.Create(entity);
+
+      if (response == 1)
+      {
+        return Created();
+      }
+
+      return Problem("Something was wrong", null, 400);
     }
 
     // PUT api/<RegisterController>/5
@@ -65,6 +76,27 @@ namespace SecurePass.Registers.Controllers
       }
 
       return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPut("{recordId}/vault/{vaultId}")]
+    public async Task<IActionResult> AddRecord(Guid vaultId, Guid recordId, [FromBody] Record entity)
+    {
+      entity.VaultId = vaultId;
+
+      var response = await _recordService.Update(recordId, entity);
+
+      if (response == 2)
+      {
+        return NotFound($"Not found any recored to update with this Id {recordId}");
+      }
+
+      if (response == 0)
+      {
+        return Problem("Something was wrong");
+      }
+
+      return Ok("Record succesfull Adding to the vault");
     }
 
     // DELETE api/<RegisterController>/5
