@@ -46,6 +46,8 @@ namespace SecurePass.Auth.Services
 
       var byteKey = Encoding.UTF8.GetBytes(_config["jwtSecret"]);
 
+      var expiresIn = DateTime.UtcNow.AddMinutes(15);
+
       var description = new SecurityTokenDescriptor()
       {
         Subject = new ClaimsIdentity(new Claim[]
@@ -53,13 +55,13 @@ namespace SecurePass.Auth.Services
           new("Id", user.Id.ToString()),
           new(ClaimTypes.Role, user.Role)
         }),
-        Expires = DateTime.UtcNow.AddMinutes(15),
+        Expires = expiresIn,
         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteKey), SecurityAlgorithms.HmacSha256Signature)
       };
 
       var token = tokenHandler.CreateToken(description);
 
-      return new LoginResultDto() { Token = tokenHandler.WriteToken(token), UserId = user.Id, Role = user.Role };
+      return new LoginResultDto() { Token = tokenHandler.WriteToken(token), UserId = user.Id, Role = user.Role, ExpiresIn = expiresIn };
     }
   }
 }
