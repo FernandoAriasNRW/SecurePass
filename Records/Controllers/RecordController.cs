@@ -15,6 +15,7 @@ namespace SecurePass.Registers.Controllers
     private readonly IRecordService _recordService = recordService;
 
     // GET: api/<RegisterController>
+    [Authorize]
     [HttpGet]
     public async Task<IEnumerable<Record>> Get()
     {
@@ -32,6 +33,7 @@ namespace SecurePass.Registers.Controllers
     }
 
     // GET api/<RegisterController>/5
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(Guid id)
     {
@@ -46,6 +48,7 @@ namespace SecurePass.Registers.Controllers
     }
 
     // POST api/<RegisterController>
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Record entity)
     {
@@ -60,6 +63,7 @@ namespace SecurePass.Registers.Controllers
     }
 
     // PUT api/<RegisterController>/5
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(Guid id, [FromBody] Record entity)
     {
@@ -100,6 +104,7 @@ namespace SecurePass.Registers.Controllers
     }
 
     // DELETE api/<RegisterController>/5
+    [Authorize]
     [HttpDelete("soft/{id}")]
     public Task<int> SoftDelete(Guid id)
     {
