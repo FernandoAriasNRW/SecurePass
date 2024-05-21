@@ -90,7 +90,7 @@ builder.Services.AddCors(options =>
   options.AddPolicy(name: "main",
                     policy =>
                     {
-                      policy.WithOrigins("http://localhost:4200")
+                      policy.WithOrigins("http://localhost:4200", "https://e650bae6.sercure-password.pages.dev/", "https://securespass.com")
                       .AllowAnyHeader()
                       .AllowAnyMethod();
                     });
