@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SecurePass.Auth.User.Domain;
+using SecurePass.Folders.Domain;
 using SecurePass.Registers.Domain;
 using SecurePass.Vaults.Domain;
 
@@ -46,6 +47,7 @@ namespace SecurePass.Repository
       // Configurar un filtro global para excluír las entidades eliminadas lógicamente
       modelBuilder.Entity<User>().HasQueryFilter(p => !p.DeletedAt.HasValue);
       modelBuilder.Entity<Vault>().HasQueryFilter(p => !p.DeletedAt.HasValue);
+      modelBuilder.Entity<Folder>().HasQueryFilter(p => !p.DeletedAt.HasValue);
       modelBuilder.Entity<Record>().HasQueryFilter(p => !p.DeletedAt.HasValue);
 
       //modelBuilder.Entity<User>()

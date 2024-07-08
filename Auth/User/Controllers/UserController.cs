@@ -1,15 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SecurePass.Auth.User.Services;
+using SecurePass.Utils;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860 b5692500175fad6bb2b306aa20ff58423c79b130ef310fb3caa924e0f28bc61d
 namespace SecurePass.Auth.User.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class UserController(IUserService userService) : ControllerBase
+  public class UserController(IUserService userService, IUploadService uploadService) : ControllerBase
   {
     private readonly IUserService _userService = userService;
+    private readonly IUploadService _uploadService = uploadService;
 
     // GET: api/<UserController>
     [Authorize(Roles = "admin")]
@@ -87,6 +89,29 @@ namespace SecurePass.Auth.User.Controllers
       }
 
       return NotFound("Not found User to delete");
+    }
+
+    [HttpPost("addPhoto")]
+    public async Task<IActionResult> AddPhoto(IFormFile file)
+    {
+      var result = await _uploadService.AddImageAsync(file);
+
+      if (result.Error != null) return BadRequest(result.Error.Message);
+
+      var image = new CloudinaryDto()
+      {
+        PublicId = result.PublicId,
+        Signature = result.Signature,
+        Width = result.Width,
+        Height = result.Height,
+        Format = result.Format,
+        CreatedAt = result.CreatedAt.ToString(),
+        Url = result.Url.ToString(),
+        SecureUrl = result.SecureUrl.ToString(),
+        Eager = result.Eager,
+      };
+
+      return Ok(image);
     }
   }
 }

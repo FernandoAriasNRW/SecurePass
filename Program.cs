@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using SecurePass.Auth.Services;
 using SecurePass.Auth.User.Domain;
 using SecurePass.Auth.User.Services;
+using SecurePass.Folders.Domain;
+using SecurePass.Folders.Services;
 using SecurePass.Records.Services;
 using SecurePass.Registers.Domain;
 using SecurePass.Repository;
@@ -54,11 +56,15 @@ builder.Services.AddSwaggerGen(opt =>
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 builder.Services.AddScoped<IRepository<User>, Repository<User>>();
 builder.Services.AddScoped<IRepository<Vault>, Repository<Vault>>();
+builder.Services.AddScoped<IRepository<Folder>, Repository<Folder>>();
 builder.Services.AddScoped<IRepository<Record>, Repository<Record>>();
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRecordService, RecordService>();
 builder.Services.AddScoped<IVaultService, VaultService>();
+builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
 builder.Services.AddSingleton<IEncrypt, Encrypt>();
 
 builder.Services.AddAuthorization();

@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Major Code Smell", "S1066:Mergeable \"if\" statements should be combined", Justification = "<pendiente>", Scope = "member", Target = "~M:SecurePass.Vaults.Controllers.VaultController.Get~System.Threading.Tasks.Task{System.Collections.Generic.IEnumerable{SecurePass.Vaults.Domain.Vault}}")]
+[assembly: SuppressMessage("Major Code Smell", "S1066:Mergeable \"if\" statements should be combined", Justification = "<pendiente>", Scope = "member", Target = "~M:SecurePass.Vaults.Controllers.FolderController.Get~System.Threading.Tasks.Task{System.Collections.Generic.IEnumerable{SecurePass.Vaults.Domain.Vault}}")]

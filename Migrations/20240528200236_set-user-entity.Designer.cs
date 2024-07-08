@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SecurePass.Repository;
@@ -11,9 +12,11 @@ using SecurePass.Repository;
 namespace SecurePass.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    partial class ApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240528200236_set-user-entity")]
+    partial class setuserentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +57,11 @@ namespace SecurePass.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ProfileId")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ProfileUrl")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Role")
@@ -139,12 +144,6 @@ namespace SecurePass.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProfileId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ProfileUrl")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")

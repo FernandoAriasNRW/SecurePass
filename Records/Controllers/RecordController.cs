@@ -76,7 +76,7 @@ namespace SecurePass.Registers.Controllers
 
       if (response == 0)
       {
-        return Problem("Something was wrong");
+        return Ok(response);
       }
 
       return Ok(response);

@@ -23,5 +23,9 @@ namespace SecurePass.Auth.User.Domain
     {
       Role = "Client";
     }
+
+    public string? ProfileUrl { get; set; }
+
+    public string? ProfileId { get; set; }
   }
 }
