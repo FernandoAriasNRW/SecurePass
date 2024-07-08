@@ -1,5 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -88,6 +91,13 @@ builder.Services.AddAuthentication(opt =>
     ValidateLifetime = true,
   };
 });
+
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(@"C:\temp-keys\"))
+                .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration()
+                {
+                  EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                  ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                });
 
 builder.Services.AddDbContext<ApiDbContext>(options => options.UseNpgsql(connectionString));
 
